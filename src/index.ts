@@ -1,4 +1,4 @@
-import { Response } from "express";
+import { Request, Response } from "express";
 // Import connection from your database configuration
 import { connection } from "./config/db";
 import { app } from "./app";
@@ -6,7 +6,7 @@ import { PORT } from "./config/environmentVariables";
 
 const port: number = parseInt(PORT ?? process.env.PORT ?? "8000", 10); // default port to listen
 
-app.get("/", (res: Response) => {
+app.get("/", (req: Request, res: Response) => {
   res.send(`Welcome to gpsxtreme's flutter todo app. Hello from server!`);
 });
 
