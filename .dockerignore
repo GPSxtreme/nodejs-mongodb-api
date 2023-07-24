@@ -1,0 +1,31 @@
+# Ignore Node.js modules and dependencies
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Ignore TypeScript build output
+dist/
+
+# Ignore development and editor-specific files
+.git/
+.vscode/
+.env
+.env.example
+
+# Ignore GitHub Actions workflow files (if any)
+.github/
+
+# Ignore other development-specific files
+*.log
+*.swp
+*.swo
+*.tmp
+*.bak
+*.tgz
+*.zip
+*.rar
+*.idea/
+*.DS_Store
+*.test.ts
+*.spec.ts
+coverage/
