@@ -1,9 +1,8 @@
 import { Document, Schema, Model, model, Types } from "mongoose";
-export { TodoModel, Todo };
+export { TodoModel, Todo, TodoDocument };
 
 interface Todo {
   userId: unknown;
-  title: string;
   body: string;
   createdTime?: Date;
   editedTime?: Date;
@@ -16,10 +15,6 @@ const todoSchema: Schema<TodoDocument> = new Schema({
   userId: {
     type: Types.ObjectId,
     ref: "user", // Reference the User collection
-    required: true,
-  },
-  title: {
-    type: String,
     required: true,
   },
   body: {

@@ -1,8 +1,24 @@
 import jwt from "jsonwebtoken";
 import { Request } from "express";
 import { SECRET_KEY } from "../config/environmentVariables";
-export { AuthUtils };
+export { AuthUtils, check_is_auth_return };
+
+type check_is_auth_return = [boolean, string];
+
 class AuthUtils {
+  static checkIfAuthenticated(req: Request): check_is_auth_return {
+    const authToken = AuthUtils.extractAuthToken(req);
+    if (!authToken) {
+      return [false, "null"];
+    }
+    const userId = AuthUtils.isAuthenticated(authToken);
+    if (!userId) {
+      return [false, "null"];
+    }
+    // User is authenticated, continue with the request
+    return [true, userId];
+  }
+
   static isAuthenticated(token: string): string | null {
     try {
       // Verify the JWT token using the secret key

@@ -1,20 +1,20 @@
 import { Request, Response } from "express";
-import { TodoServices } from "../services/todoServices";
-import { Todo } from "../models/todoModel";
+import { NoteServices } from "../services/noteServices";
+import { Note } from "../models/noteModel";
 import { AuthUtils, check_is_auth_return } from "../utils/authUtils";
-export { addTodo, getTodos, deleteTodo };
+export { addNote, getNotes, deleteNote };
 
-const addTodo = async (req: Request, res: Response) => {
+const addNote = async (req: Request, res: Response) => {
   try {
-    const todo: Todo = req.body;
+    const note: Note = req.body;
     const userAuthCheck: check_is_auth_return =
       AuthUtils.checkIfAuthenticated(req);
     if (userAuthCheck[0]) {
-      todo.userId = userAuthCheck[1];
-      await TodoServices.handleAddTodo(todo).then((_) => {
+      note.userId = userAuthCheck[1];
+      await NoteServices.handleAddNote(note).then((_) => {
         return res
           .status(200)
-          .json({ status: true, message: "Successfully added the task" });
+          .json({ status: true, message: "Successfully added note" });
       });
     } else {
       return res
@@ -24,20 +24,20 @@ const addTodo = async (req: Request, res: Response) => {
   } catch (error) {
     return res
       .status(500)
-      .json({ status: false, message: `failed adding the task , ${error}` });
+      .json({ status: false, message: `failed adding the notes , ${error}` });
   }
 };
 
-const getTodos = async (req: Request, res: Response) => {
+const getNotes = async (req: Request, res: Response) => {
   try {
     const userId = req.query.userId as string;
     const isAuthenticated: check_is_auth_return =
       AuthUtils.checkIfAuthenticated(req);
     if (isAuthenticated[0]) {
-      await TodoServices.handleGetUserTodoDocs(userId).then((docs) => {
+      await NoteServices.handleGetUserNoteDocs(userId).then((docs) => {
         return res.status(200).json({
           status: true,
-          message: "Successfully fetched tasks",
+          message: "Successfully fetched notes",
           todos: docs,
         });
       });
@@ -49,21 +49,21 @@ const getTodos = async (req: Request, res: Response) => {
   } catch (error) {
     return res
       .status(500)
-      .json({ status: false, message: `failed fetching tasks, ${error}` });
+      .json({ status: false, message: `failed fetching notes, ${error}` });
   }
 };
 
-const deleteTodo = async (req: Request, res: Response) => {
+const deleteNote = async (req: Request, res: Response) => {
   try {
-    const todoId = req.query.todoId as string;
+    const noteId = req.query.noteId as string;
     const isAuthenticated: check_is_auth_return =
       AuthUtils.checkIfAuthenticated(req);
     if (isAuthenticated[0]) {
-      await TodoServices.deleteTodo(todoId).then((doc) => {
+      await NoteServices.deleteNote(noteId).then((doc) => {
         return res.status(200).json({
           status: true,
-          message: "Successfully deleted todo",
-          todo: doc,
+          message: "Successfully deleted note",
+          note: doc,
         });
       });
     } else {
@@ -74,6 +74,6 @@ const deleteTodo = async (req: Request, res: Response) => {
   } catch (error) {
     return res
       .status(500)
-      .json({ status: false, message: `failed deleting todo, ${error}` });
+      .json({ status: false, message: `failed deleting note, ${error}` });
   }
 };

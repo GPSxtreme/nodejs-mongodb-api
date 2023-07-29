@@ -3,7 +3,6 @@ import bcrypt from "bcrypt";
 import { timeStamp } from "console";
 import { v4 as uuidv4 } from "uuid";
 export { UserModel };
-
 const { Schema } = mongoose;
 
 interface UserDocument extends Document {

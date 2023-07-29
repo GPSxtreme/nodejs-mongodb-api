@@ -1,4 +1,4 @@
-import { Todo, TodoModel } from "../models/todoModel";
+import { Todo, TodoModel, TodoDocument } from "../models/todoModel";
 
 export { TodoServices };
 
@@ -10,5 +10,9 @@ class TodoServices {
 
   static async handleGetUserTodoDocs(userId: string) {
     return TodoModel.find({ userId });
+  }
+  static async deleteTodo(todoId: string) {
+    const deletedTodo = await TodoModel.findByIdAndDelete(todoId);
+    return deletedTodo;
   }
 }
