@@ -11,7 +11,7 @@ class NoteServices {
   static async handleGetUserNoteDocs(userId: string) {
     return NoteModel.find({ userId });
   }
-  static async deleteNote(todoId: string) {
+  static async handleDeleteNote(todoId: string) {
     const note = await NoteModel.findByIdAndDelete(todoId);
     return note;
   }

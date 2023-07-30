@@ -3,6 +3,7 @@ import bodyParser from "body-parser";
 import { router as UserRouter } from "./router/userRouter";
 import { router as TodoRouter } from "./router/todoRouter";
 import { router as NoteRouter } from "./router/noteRouter";
+import { router as DataRouter } from "./router/dataRouter";
 export { app };
 
 const app = express();
@@ -12,3 +13,4 @@ app.use(bodyParser.json());
 app.use("/user", UserRouter);
 app.use("/todo", TodoRouter);
 app.use("/note", NoteRouter);
+app.use("/data", DataRouter);

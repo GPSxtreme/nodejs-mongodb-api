@@ -1,14 +1,17 @@
 import mongoose, { Document, Model, model } from "mongoose";
 import bcrypt from "bcrypt";
-import { timeStamp } from "console";
 import { v4 as uuidv4 } from "uuid";
-export { UserModel };
+export { UserModel, User };
 const { Schema } = mongoose;
 
-interface UserDocument extends Document {
+interface User {
   email: string;
   password: string;
   name: string;
+  profilePicture: unknown;
+}
+
+interface UserDocument extends Document, User {
   comparePassword(candidatePassword: string): Promise<boolean>;
 }
 
@@ -26,10 +29,13 @@ const userSchema = new Schema({
     required: [true, "Email is Required"],
     unique: true,
   },
+  profilePicture: {
+    data: Buffer,
+    contentType: String,
+  },
   name: {
     type: String,
     default: generateUniqueName,
-    required: false,
   },
   password: {
     type: String,

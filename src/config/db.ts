@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { ConnectOptions } from "mongoose";
 import {
   USER_NAME,
   USER_PASSWORD,
