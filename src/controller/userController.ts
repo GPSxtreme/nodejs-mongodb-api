@@ -1,16 +1,16 @@
 import { Request, Response } from "express";
 import { UserService } from "../services/userServices";
 import { User } from "../models/userModel";
-import { AuthUtils, check_is_auth_return } from "../utils/authUtils";
 export { register, login, uploadProfilePicture };
 
 const register = async (req: Request, res: Response) => {
   try {
     const newUser: User = req.body;
-    await UserService.handleUserRegistration(newUser);
-    res
-      .status(200)
-      .send({ status: true, message: "User registered successfully" });
+    await UserService.handleUserRegistration(newUser, req.body.remember).then(
+      (response) => {
+        res.status(response.success ? 200 : 500).send(response);
+      }
+    );
   } catch (error) {
     res
       .status(500)
