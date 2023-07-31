@@ -8,6 +8,9 @@ interface User {
   email: string;
   password: string;
   name: string;
+  country: string;
+  dob: Date;
+  isEmailVerified: boolean;
   profilePicture: unknown;
 }
 
@@ -36,6 +39,16 @@ const userSchema = new Schema({
   name: {
     type: String,
     default: generateUniqueName,
+  },
+  country: {
+    type: String,
+  },
+  dob: {
+    type: Date,
+  },
+  isEmailVerified: {
+    type: Boolean,
+    default: false,
   },
   password: {
     type: String,
