@@ -1,8 +1,7 @@
 import { UserModel, User } from "../models/userModel";
-import jwt from "jsonwebtoken";
-import { SECRET_KEY } from "../config/environmentVariables";
+import { JwtUtils } from "../utils/jwtUtils";
 import fs from "fs";
-export { UserService };
+export { UserService, TokenData };
 
 type TokenData = {
   userId?: number | null;
@@ -13,19 +12,41 @@ type TokenData = {
 interface LoginResponse {
   success: boolean;
   message: string;
-  tokenData?: TokenData; // TODO:  remove in production
+  token?: string;
+  tokenExpiresIn?: string;
+}
+
+interface RegisterResponse {
+  success: boolean;
+  message: string;
   token?: string;
   tokenExpiresIn?: string;
 }
 
 class UserService {
-  static async handleUserRegistration(user: User) {
+  static async handleUserRegistration(
+    user: User,
+    remember?: boolean
+  ): Promise<RegisterResponse> {
     //register user logic here
     try {
       const createUser = new UserModel(user);
-      return await createUser.save();
-    } catch (err) {
-      throw err;
+      const newUser = await createUser.save();
+      const tokenData: TokenData = {
+        userId: newUser._id,
+        email: newUser.email,
+        name: newUser.name,
+      };
+      const token = JwtUtils.generateToken(tokenData, remember ?? false);
+      return {
+        success: true,
+        message: "Register successful",
+        token,
+        tokenExpiresIn: remember ? "3650 days" : "48 h",
+      };
+    } catch (error) {
+      // Handle any errors that occurred during the login process
+      return { success: false, message: `Register failed\nError : ${error}` };
     }
   }
 
@@ -54,16 +75,12 @@ class UserService {
           name: user.name,
         };
         // generate jwt token
-        const tokenExpiryTime: string = remember ? "3650 days" : "48 h";
-        const token = jwt.sign(tokenData, SECRET_KEY as string, {
-          expiresIn: tokenExpiryTime, // Token expires in 1 hour
-        });
+        const token = JwtUtils.generateToken(tokenData, remember ?? false);
         return {
           success: true,
           message: "Login successful",
-          tokenData, //TODO: remove in production
           token,
-          tokenExpiresIn: tokenExpiryTime,
+          tokenExpiresIn: remember ? "3650 days" : "48 h",
         };
         // You can proceed with creating a session or generating a token for authentication
       } else {
