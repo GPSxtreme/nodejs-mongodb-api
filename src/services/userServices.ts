@@ -55,6 +55,7 @@ class UserService {
         isEmailVerified: newUser.isEmailVerified,
       };
       const token = JwtUtils.generateToken(tokenData, remember ?? false);
+      console.log(`${user!.email} created account 🎂`);
       return {
         success: true,
         message: "Register successful",
@@ -94,6 +95,7 @@ class UserService {
         };
         // generate jwt token
         const token = JwtUtils.generateToken(tokenData, remember ?? false);
+        console.log(`${user!.email} logged in`);
         return {
           success: true,
           message: "Login successful",
@@ -128,7 +130,7 @@ class UserService {
       }
       user.profilePicture = final_img;
       const updatedUser = await user.save();
-      console.log("Updated User:", updatedUser.id);
+      console.log(`${user!.email} updated their profile picture`);
       if (!updatedUser) {
         // Handle user not found
         return {
@@ -160,6 +162,7 @@ class UserService {
         };
       } else {
         const tokenData: TokenData = userToTokenData(user, userId);
+        console.log(`${user!.email} updated their profile data`);
         return {
           success: true,
           message: `Successfully updated user data`,
