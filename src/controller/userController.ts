@@ -12,6 +12,7 @@ const register = async (req: Request, res: Response) => {
       }
     );
   } catch (error) {
+    console.error(error);
     res
       .status(500)
       .send({ status: false, message: `Registration Failed , ${error}` });
@@ -27,6 +28,7 @@ const login = async (req: Request, res: Response) => {
       }
     );
   } catch (error) {
+    console.error(error);
     res.status(500).send({ status: false, message: `Login Failed , ${error}` });
   }
 };
@@ -48,6 +50,7 @@ const uploadProfilePicture = async (req: Request, res: Response) => {
       );
     }
   } catch (error) {
+    console.error(error);
     res
       .status(500)
       .send({ status: false, message: `Upload Failed , ${error}` });
@@ -63,6 +66,7 @@ const updateUserData = async (req: Request, res: Response) => {
       }
     );
   } catch (error) {
+    console.error(error);
     res
       .status(500)
       .send({ status: false, message: `Update Failed , ${error}` });

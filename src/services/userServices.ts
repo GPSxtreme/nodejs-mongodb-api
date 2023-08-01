@@ -63,6 +63,7 @@ class UserService {
         tokenExpiresIn: remember ? "3650 days" : "48 h",
       };
     } catch (error) {
+      console.error(error);
       // Handle any errors that occurred during the login process
       return { success: false, message: `Register failed\nError : ${error}` };
     }
@@ -108,6 +109,7 @@ class UserService {
         return { success: false, message: "Invalid email or password" };
       }
     } catch (error) {
+      console.error(error);
       // Handle any errors that occurred during the login process
       return { success: false, message: `Login failed\nError : ${error}` };
     }
@@ -144,6 +146,7 @@ class UserService {
       };
     } catch (error) {
       // Handle error while uploading and saving profile picture
+      console.error(error);
       return {
         success: false,
         message: `Profile picture upload failed\nError : ${error}`,
@@ -170,6 +173,7 @@ class UserService {
         };
       }
     } catch (error) {
+      console.error(error);
       return {
         success: false,
         message: `Update user data failed\nError: ${error}`,

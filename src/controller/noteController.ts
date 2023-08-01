@@ -13,6 +13,7 @@ const addNote = async (req: Request, res: Response) => {
         .json({ status: true, message: "Successfully added note" });
     });
   } catch (error) {
+    console.error(error);
     return res
       .status(500)
       .json({ status: false, message: `failed adding the notes , ${error}` });
@@ -29,6 +30,7 @@ const getNotes = async (req: Request, res: Response) => {
       });
     });
   } catch (error) {
+    console.error(error);
     return res
       .status(500)
       .json({ status: false, message: `failed fetching notes, ${error}` });
@@ -46,6 +48,7 @@ const deleteNote = async (req: Request, res: Response) => {
       });
     });
   } catch (error) {
+    console.error(error);
     return res
       .status(500)
       .json({ status: false, message: `failed deleting note, ${error}` });

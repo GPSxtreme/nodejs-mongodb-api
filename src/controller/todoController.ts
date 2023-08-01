@@ -13,6 +13,7 @@ const addTodo = async (req: Request, res: Response) => {
         .json({ status: true, message: "Successfully added the task" });
     });
   } catch (error) {
+    console.error(error);
     return res
       .status(500)
       .json({ status: false, message: `failed adding the task , ${error}` });
@@ -29,6 +30,7 @@ const getTodos = async (req: Request, res: Response) => {
       });
     });
   } catch (error) {
+    console.error(error);
     return res
       .status(500)
       .json({ status: false, message: `failed fetching tasks, ${error}` });
@@ -46,6 +48,7 @@ const deleteTodo = async (req: Request, res: Response) => {
       });
     });
   } catch (error) {
+    console.error(error);
     return res
       .status(500)
       .json({ status: false, message: `failed deleting todo, ${error}` });
