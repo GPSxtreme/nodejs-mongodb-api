@@ -155,6 +155,9 @@ class UserService {
   }
   static async updateUserData(userId: string, data: User) {
     try {
+      // and iso date string is being passed from flutter
+      // end so we convert it into a Date object recognized by nodejs
+      data.dob = new Date(data.dob);
       const user = await UserModel.findByIdAndUpdate(userId, data, {
         new: true,
       });
