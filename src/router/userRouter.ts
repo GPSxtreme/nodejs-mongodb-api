@@ -3,6 +3,7 @@ import {
   register,
   login,
   uploadProfilePicture,
+  updateUserData,
 } from "../controller/userController";
 export { router };
 import {
@@ -21,3 +22,4 @@ router.post(
   uploadUserProfilePicture.single("profilePicture"),
   uploadProfilePicture
 );
+router.post("/updateUserData", AuthUtils.preAuthChecker, updateUserData);

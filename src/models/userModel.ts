@@ -1,6 +1,7 @@
 import mongoose, { Document, Model, model } from "mongoose";
 import bcrypt from "bcrypt";
 import { v4 as uuidv4 } from "uuid";
+import { TokenData } from "../services/userServices";
 export { UserModel, User };
 const { Schema } = mongoose;
 

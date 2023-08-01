@@ -3,11 +3,14 @@ import { JwtUtils } from "../utils/jwtUtils";
 import fs from "fs";
 export { UserService, TokenData };
 
-type TokenData = {
-  userId?: number | null;
+interface TokenData {
+  userId?: string | null;
   email: string;
   name: string;
-};
+  country?: string;
+  dob?: Date;
+  isEmailVerified: boolean;
+}
 
 interface LoginResponse {
   success: boolean;
@@ -23,6 +26,19 @@ interface RegisterResponse {
   tokenExpiresIn?: string;
 }
 
+// Function to convert User object to TokenData
+function userToTokenData(user: User, userId: string): TokenData {
+  const tokenData: TokenData = {
+    userId: userId,
+    email: user.email,
+    isEmailVerified: user.isEmailVerified,
+    name: user.name,
+    country: user.country,
+    dob: user.dob,
+  };
+  return tokenData;
+}
+
 class UserService {
   static async handleUserRegistration(
     user: User,
@@ -36,6 +52,7 @@ class UserService {
         userId: newUser._id,
         email: newUser.email,
         name: newUser.name,
+        isEmailVerified: newUser.isEmailVerified,
       };
       const token = JwtUtils.generateToken(tokenData, remember ?? false);
       return {
@@ -73,6 +90,7 @@ class UserService {
           userId: user._id,
           email: user.email,
           name: user.name,
+          isEmailVerified: user.isEmailVerified,
         };
         // generate jwt token
         const token = JwtUtils.generateToken(tokenData, remember ?? false);
@@ -127,6 +145,31 @@ class UserService {
       return {
         success: false,
         message: `Profile picture upload failed\nError : ${error}`,
+      };
+    }
+  }
+  static async updateUserData(userId: string, data: User) {
+    try {
+      const user = await UserModel.findByIdAndUpdate(userId, data, {
+        new: true,
+      });
+      if (user === null) {
+        return {
+          success: false,
+          message: `No such user exists`,
+        };
+      } else {
+        const tokenData: TokenData = userToTokenData(user, userId);
+        return {
+          success: true,
+          message: `Successfully updated user data`,
+          token: JwtUtils.generateToken(tokenData, true),
+        };
+      }
+    } catch (error) {
+      return {
+        success: false,
+        message: `Update user data failed\nError: ${error}`,
       };
     }
   }

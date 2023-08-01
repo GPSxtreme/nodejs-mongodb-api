@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { UserService } from "../services/userServices";
 import { User } from "../models/userModel";
-export { register, login, uploadProfilePicture };
+export { register, login, uploadProfilePicture, updateUserData };
 
 const register = async (req: Request, res: Response) => {
   try {
@@ -51,5 +51,20 @@ const uploadProfilePicture = async (req: Request, res: Response) => {
     res
       .status(500)
       .send({ status: false, message: `Upload Failed , ${error}` });
+  }
+};
+
+const updateUserData = async (req: Request, res: Response) => {
+  try {
+    const updateData: User = req.body;
+    await UserService.updateUserData(req.userId!, updateData).then(
+      (response) => {
+        res.status(response!.success ? 200 : 500).send(response);
+      }
+    );
+  } catch (error) {
+    res
+      .status(500)
+      .send({ status: false, message: `Update Failed , ${error}` });
   }
 };
