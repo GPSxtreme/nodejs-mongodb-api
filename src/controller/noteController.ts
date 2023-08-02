@@ -26,7 +26,7 @@ const getNotes = async (req: Request, res: Response) => {
       return res.status(200).json({
         status: true,
         message: "Successfully fetched notes",
-        todos: docs,
+        notes: docs,
       });
     });
   } catch (error) {
