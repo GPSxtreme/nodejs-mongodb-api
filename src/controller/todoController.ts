@@ -10,13 +10,13 @@ const addTodo = async (req: Request, res: Response) => {
     await TodoServices.handleAddTodo(todo).then((_) => {
       return res
         .status(200)
-        .json({ status: true, message: "Successfully added the task" });
+        .json({ success: true, message: "Successfully added the task" });
     });
   } catch (error) {
     console.error(error);
     return res
       .status(500)
-      .json({ status: false, message: `failed adding the task , ${error}` });
+      .json({ success: false, message: `failed adding the task , ${error}` });
   }
 };
 
@@ -24,7 +24,7 @@ const getTodos = async (req: Request, res: Response) => {
   try {
     await TodoServices.handleGetUserTodoDocs(req.userId!).then((docs) => {
       return res.status(200).json({
-        status: true,
+        success: true,
         message: "Successfully fetched tasks",
         todos: docs,
       });
@@ -33,7 +33,7 @@ const getTodos = async (req: Request, res: Response) => {
     console.error(error);
     return res
       .status(500)
-      .json({ status: false, message: `failed fetching tasks, ${error}` });
+      .json({ success: false, message: `failed fetching tasks, ${error}` });
   }
 };
 
@@ -42,7 +42,7 @@ const deleteTodo = async (req: Request, res: Response) => {
     const todoId = req.query.todoId as string;
     await TodoServices.deleteTodo(todoId).then((doc) => {
       return res.status(200).json({
-        status: true,
+        success: true,
         message: "Successfully deleted todo",
         todo: doc,
       });
@@ -51,6 +51,6 @@ const deleteTodo = async (req: Request, res: Response) => {
     console.error(error);
     return res
       .status(500)
-      .json({ status: false, message: `failed deleting todo, ${error}` });
+      .json({ success: false, message: `failed deleting todo, ${error}` });
   }
 };

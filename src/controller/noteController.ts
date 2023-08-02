@@ -10,13 +10,13 @@ const addNote = async (req: Request, res: Response) => {
     await NoteServices.handleAddNote(note).then((_) => {
       return res
         .status(200)
-        .json({ status: true, message: "Successfully added note" });
+        .json({ success: true, message: "Successfully added note" });
     });
   } catch (error) {
     console.error(error);
     return res
       .status(500)
-      .json({ status: false, message: `failed adding the notes , ${error}` });
+      .json({ success: false, message: `failed adding the notes , ${error}` });
   }
 };
 
@@ -24,7 +24,7 @@ const getNotes = async (req: Request, res: Response) => {
   try {
     await NoteServices.handleGetUserNoteDocs(req.userId!).then((docs) => {
       return res.status(200).json({
-        status: true,
+        success: true,
         message: "Successfully fetched notes",
         notes: docs,
       });
@@ -33,7 +33,7 @@ const getNotes = async (req: Request, res: Response) => {
     console.error(error);
     return res
       .status(500)
-      .json({ status: false, message: `failed fetching notes, ${error}` });
+      .json({ success: false, message: `failed fetching notes, ${error}` });
   }
 };
 
@@ -42,7 +42,7 @@ const deleteNote = async (req: Request, res: Response) => {
     const noteId = req.query.noteId as string;
     await NoteServices.handleDeleteNote(noteId).then((doc) => {
       return res.status(200).json({
-        status: true,
+        success: true,
         message: "Successfully deleted note",
         note: doc,
       });
@@ -51,6 +51,6 @@ const deleteNote = async (req: Request, res: Response) => {
     console.error(error);
     return res
       .status(500)
-      .json({ status: false, message: `failed deleting note, ${error}` });
+      .json({ success: false, message: `failed deleting note, ${error}` });
   }
 };
