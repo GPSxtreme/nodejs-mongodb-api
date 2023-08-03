@@ -11,8 +11,15 @@ class TodoServices {
   static async handleGetUserTodoDocs(userId: string) {
     return TodoModel.find({ userId });
   }
-  static async deleteTodo(todoId: string) {
+  static async handleDeleteTodo(todoId: string) {
     const deletedTodo = await TodoModel.findByIdAndDelete(todoId);
     return deletedTodo;
+  }
+  static async handleUpdateTodo(todo: Todo, todoId: string) {
+    return await TodoModel.findOneAndUpdate(
+      { _id: todoId },
+      { $set: todo },
+      { new: true }
+    );
   }
 }
