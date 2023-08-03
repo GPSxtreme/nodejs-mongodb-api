@@ -15,4 +15,11 @@ class NoteServices {
     const note = await NoteModel.findByIdAndDelete(todoId);
     return note;
   }
+  static async handleUpdateNote(note: Note, noteId: string) {
+    return await NoteModel.findByIdAndUpdate(
+      { _id: noteId },
+      { $set: note },
+      { new: true }
+    );
+  }
 }
