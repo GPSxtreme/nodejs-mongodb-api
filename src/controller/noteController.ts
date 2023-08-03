@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { NoteServices } from "../services/noteServices";
 import { Note } from "../models/noteModel";
-export { addNote, getNotes, deleteNote };
+export { addNote, getNotes, deleteNote, updateNote };
 
 const addNote = async (req: Request, res: Response) => {
   try {
@@ -52,5 +52,24 @@ const deleteNote = async (req: Request, res: Response) => {
     return res
       .status(500)
       .json({ success: false, message: `failed deleting note, ${error}` });
+  }
+};
+const updateNote = async (req: Request, res: Response) => {
+  try {
+    const updatedNote: Note = req.body;
+    await NoteServices.handleUpdateNote(updatedNote, req.body._id).then(
+      (note) => {
+        return res.status(200).json({
+          success: true,
+          message: "Successfully updated the note",
+          updatedNote: note,
+        });
+      }
+    );
+  } catch (error) {
+    console.error(error);
+    return res
+      .status(500)
+      .json({ success: false, message: `failed updating note, ${error}` });
   }
 };
