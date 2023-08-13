@@ -5,7 +5,8 @@ export { NoteServices };
 class NoteServices {
   static async handleAddNote(note: Note) {
     const newNote = new NoteModel(note);
-    return newNote.save();
+    await newNote.save();
+    return newNote.id!;
   }
 
   static async handleGetUserNoteDocs(userId: string) {

@@ -7,10 +7,14 @@ const addTodo = async (req: Request, res: Response) => {
   try {
     const todo: Todo = req.body;
     todo.userId = req.userId;
-    await TodoServices.handleAddTodo(todo).then((_) => {
+    await TodoServices.handleAddTodo(todo).then((id) => {
       return res
         .status(200)
-        .json({ success: true, message: "Successfully added the task" });
+        .json({
+          success: true,
+          message: "Successfully added the task",
+          todoId: id,
+        });
     });
   } catch (error) {
     console.error(error);

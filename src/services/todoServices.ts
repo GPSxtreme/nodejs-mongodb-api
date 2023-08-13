@@ -5,7 +5,8 @@ export { TodoServices };
 class TodoServices {
   static async handleAddTodo(todo: Todo) {
     const newTodo = new TodoModel(todo);
-    return newTodo.save();
+    newTodo.save();
+    return newTodo.id!;
   }
 
   static async handleGetUserTodoDocs(userId: string) {

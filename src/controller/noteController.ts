@@ -7,10 +7,14 @@ const addNote = async (req: Request, res: Response) => {
   try {
     const note: Note = req.body;
     note.userId = req.userId;
-    await NoteServices.handleAddNote(note).then((_) => {
+    await NoteServices.handleAddNote(note).then((id) => {
       return res
         .status(200)
-        .json({ success: true, message: "Successfully added note" });
+        .json({
+          success: true,
+          message: "Successfully added note",
+          noteId: id,
+        });
     });
   } catch (error) {
     console.error(error);
