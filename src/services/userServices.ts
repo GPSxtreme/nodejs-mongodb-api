@@ -1,7 +1,18 @@
 import { UserModel, User } from "../models/userModel";
 import { JwtUtils } from "../utils/jwtUtils";
 import fs from "fs";
+import { EMAIL_PASSWORD, EMAIL_USERNAME } from "../config/environmentVariables";
+import nodemailer from "nodemailer";
+import { getApiEndPoint } from "../config/environmentVariables";
 export { UserService, TokenData };
+
+const transporter = nodemailer.createTransport({
+  service: "Gmail",
+  auth: {
+    user: EMAIL_USERNAME,
+    pass: EMAIL_PASSWORD,
+  },
+});
 
 interface TokenData {
   userId?: string | null;
@@ -112,6 +123,36 @@ class UserService {
       console.error(error);
       // Handle any errors that occurred during the login process
       return { success: false, message: `Login failed\nError : ${error}` };
+    }
+  }
+  static async handleSendEmailVerificationLink(userId: string) {
+    try {
+      const user = await UserModel.findById(userId);
+      // check if user is already verified
+      if (user?.isEmailVerified) {
+        return {
+          success: false,
+          message: "user already verified",
+        };
+      }
+      // Generate a verification token with the user's ID
+      const verificationToken = await user?.generateVerificationToken();
+      const verifyLink = getApiEndPoint() + `/user/verify/${verificationToken}`;
+      transporter.sendMail({
+        to: user?.email,
+        subject: "Verify Account",
+        html: `Click <a href = '${verifyLink}'>here</a> to confirm your email.`,
+      });
+      return {
+        success: true,
+        message: "Verification email sent successfully",
+      };
+    } catch (error) {
+      console.error(error);
+      return {
+        success: false,
+        message: `Generating email verification link failed\nError : ${error}`,
+      };
     }
   }
   static async handleProfilePictureUpload(userId: string, filePath: any) {
