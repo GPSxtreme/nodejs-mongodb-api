@@ -1,7 +1,16 @@
 import { Request, Response } from "express";
 import { UserService } from "../services/userServices";
-import { User } from "../models/userModel";
-export { register, login, uploadProfilePicture, updateUserData };
+import { User, UserModel } from "../models/userModel";
+import { JwtUtils } from "../utils/jwtUtils";
+import { JwtPayload } from "jsonwebtoken";
+export {
+  register,
+  login,
+  uploadProfilePicture,
+  updateUserData,
+  verifyUserEmail,
+  sendUserEmailVerificationLink,
+};
 
 const register = async (req: Request, res: Response) => {
   try {
@@ -70,5 +79,63 @@ const updateUserData = async (req: Request, res: Response) => {
     res
       .status(500)
       .send({ status: false, message: `Update Failed , ${error}` });
+  }
+};
+
+const sendUserEmailVerificationLink = async (req: Request, res: Response) => {
+  try {
+    await UserService.handleSendEmailVerificationLink(req.userId!).then(
+      (response) => {
+        res.status(response!.success ? 200 : 500).send(response);
+      }
+    );
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({
+      status: false,
+      message: `Failed to send verificationLink , ${error}`,
+    });
+  }
+};
+
+const verifyUserEmail = async (req: Request, res: Response) => {
+  const token = req.params.id;
+  if (!token) {
+    return res.status(422).send({
+      success: false,
+      message: "Missing Token",
+    });
+  }
+  // verify the token from the url
+  let payload = null;
+  try {
+    payload = JwtUtils.verifyEmailToken(token) as JwtPayload;
+  } catch (error) {
+    return res.status(500).send({
+      success: false,
+      message: error,
+    });
+  }
+  // Find user with matching ID
+  const user = await UserModel.findById(payload.id);
+  if (!user) {
+    return res.status(404).send({
+      success: false,
+      message: "User does not  exists",
+    });
+  }
+  // Update user verification status to true
+  if (!user.isEmailVerified) {
+    user.isEmailVerified = true;
+    await user.save();
+    return res.status(200).send({
+      success: true,
+      message: "Account Verified",
+    });
+  } else {
+    return res.status(200).send({
+      success: true,
+      message: "Account already Verified",
+    });
   }
 };
