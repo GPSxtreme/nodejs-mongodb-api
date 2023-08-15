@@ -1,7 +1,8 @@
 import mongoose, { Document, Model, model } from "mongoose";
 import bcrypt from "bcrypt";
 import { v4 as uuidv4 } from "uuid";
-import { TokenData } from "../services/userServices";
+import { USER_VERIFICATION_TOKEN_SECRET } from "../config/environmentVariables";
+import jwt from "jsonwebtoken";
 export { UserModel, User };
 const { Schema } = mongoose;
 
@@ -17,6 +18,7 @@ interface User {
 
 interface UserDocument extends Document, User {
   comparePassword(candidatePassword: string): Promise<boolean>;
+  generateVerificationToken(): Promise<string>;
 }
 
 // Function to generate a user-friendly unique name
@@ -88,6 +90,16 @@ userSchema.methods.comparePassword = async function (
   } catch (error) {
     throw error;
   }
+};
+
+userSchema.methods.generateVerificationToken = function () {
+  const user = this;
+  const verificationToken = jwt.sign(
+    { id: user._id },
+    USER_VERIFICATION_TOKEN_SECRET as string,
+    { expiresIn: "7d" }
+  );
+  return verificationToken;
 };
 
 // user model
