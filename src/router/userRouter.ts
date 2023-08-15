@@ -4,6 +4,8 @@ import {
   login,
   uploadProfilePicture,
   updateUserData,
+  verifyUserEmail,
+  sendUserEmailVerificationLink,
 } from "../controller/userController";
 export { router };
 import {
@@ -23,3 +25,9 @@ router.post(
   uploadProfilePicture
 );
 router.post("/updateUserData", AuthUtils.preAuthChecker, updateUserData);
+router.get("/verify/:id", verifyUserEmail);
+router.get(
+  "/sendVerificationLink",
+  AuthUtils.preAuthChecker,
+  sendUserEmailVerificationLink
+);
