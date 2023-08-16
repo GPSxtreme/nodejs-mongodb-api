@@ -3,6 +3,7 @@ import { UserService } from "../services/userServices";
 import { User, UserModel } from "../models/userModel";
 import { JwtUtils } from "../utils/jwtUtils";
 import { JwtPayload } from "jsonwebtoken";
+import path from "path";
 export {
   register,
   login,
@@ -128,10 +129,16 @@ const verifyUserEmail = async (req: Request, res: Response) => {
   if (!user.isEmailVerified) {
     user.isEmailVerified = true;
     await user.save();
-    return res.status(200).send({
-      success: true,
-      message: "Account Verified",
-    });
+    return res
+      .status(200)
+      .sendFile(
+        path.join(
+          __dirname,
+          "..",
+          "..",
+          "templates/html/userEmailVerificationSuccess.html"
+        )
+      );
   } else {
     return res.status(200).send({
       success: true,
