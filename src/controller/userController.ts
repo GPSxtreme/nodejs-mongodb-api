@@ -129,20 +129,15 @@ const verifyUserEmail = async (req: Request, res: Response) => {
   if (!user.isEmailVerified) {
     user.isEmailVerified = true;
     await user.save();
-    return res
-      .status(200)
-      .sendFile(
-        path.join(
-          __dirname,
-          "..",
-          "..",
-          "templates/html/userEmailVerificationSuccess.html"
-        )
-      );
-  } else {
-    return res.status(200).send({
-      success: true,
-      message: "Account already Verified",
-    });
   }
+  return res
+    .status(200)
+    .sendFile(
+      path.join(
+        __dirname,
+        "..",
+        "..",
+        "templates/html/userEmailVerificationSuccess.html"
+      )
+    );
 };
