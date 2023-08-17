@@ -8,10 +8,9 @@ import { router as DataRouter } from "./router/dataRouter";
 export { app };
 
 const app = express();
-console.log(path.join(__dirname, "..", "assets"));
-// Serve static files from the "assets" directory
+// Serve static files
 app.use("/assets", express.static(path.join(__dirname, "..", "assets/")));
-
+app.use("/assets", express.static(path.join(__dirname, "..", "templates/")));
 // Use body-parser middleware
 app.use(bodyParser.json());
 app.use("/user", UserRouter);

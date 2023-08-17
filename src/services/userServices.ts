@@ -1,6 +1,8 @@
 import { UserModel, User } from "../models/userModel";
 import { JwtUtils } from "../utils/jwtUtils";
 import fs from "fs";
+import path from "path";
+import Handlebars from "handlebars";
 import { EMAIL_PASSWORD, EMAIL_USERNAME } from "../config/environmentVariables";
 import nodemailer from "nodemailer";
 import { getApiEndPoint } from "../config/environmentVariables";
@@ -38,7 +40,7 @@ interface RegisterResponse {
 }
 
 // Function to convert User object to TokenData
-function userToTokenData(user: User, userId: string): TokenData {
+function _userToTokenData(user: User, userId: string): TokenData {
   const tokenData: TokenData = {
     userId: userId,
     email: user.email,
@@ -48,6 +50,40 @@ function userToTokenData(user: User, userId: string): TokenData {
     dob: user.dob,
   };
   return tokenData;
+}
+
+async function _sendEmailWithTemplate(
+  to: string,
+  subject: string,
+  templateName: string,
+  templateData: any
+) {
+  try {
+    const source = fs.readFileSync(
+      path.join(__dirname, "..", "..", "templates/email/", templateName),
+      "utf-8"
+    );
+    const compiledTemplate = Handlebars.compile(source);
+    const emailBody = compiledTemplate(templateData);
+
+    const mailOptions = {
+      to,
+      subject,
+      html: emailBody,
+      attachments: [
+        {
+          filename: "notex_logo.svg",
+          path: path.join(__dirname, "../..", "assets/notex_logo.svg"),
+          cid: "logo",
+        },
+      ],
+    };
+
+    await transporter.sendMail(mailOptions);
+    console.log("Email sent successfully");
+  } catch (error) {
+    console.error("Sending email failed:", error);
+  }
 }
 
 class UserService {
@@ -125,6 +161,7 @@ class UserService {
       return { success: false, message: `Login failed\nError : ${error}` };
     }
   }
+
   static async handleSendEmailVerificationLink(userId: string) {
     try {
       const user = await UserModel.findById(userId);
@@ -138,11 +175,17 @@ class UserService {
       // Generate a verification token with the user's ID
       const verificationToken = await user?.generateVerificationToken();
       const verifyLink = getApiEndPoint() + `/user/verify/${verificationToken}`;
-      transporter.sendMail({
-        to: user?.email,
-        subject: "Verify Account",
-        html: `Click <a href = '${verifyLink}'>here</a> to confirm your email.`,
-      });
+      const templateData = {
+        name: user?.name,
+        verificationLink: verifyLink,
+        // Add more template data if needed
+      };
+      await _sendEmailWithTemplate(
+        user?.email!,
+        "Account verification",
+        "userEmailVerification.hbs",
+        templateData
+      );
       return {
         success: true,
         message: "Verification email sent successfully",
@@ -208,7 +251,7 @@ class UserService {
           message: `No such user exists`,
         };
       } else {
-        const tokenData: TokenData = userToTokenData(user, userId);
+        const tokenData: TokenData = _userToTokenData(user, userId);
         console.log(`${user!.email} updated their profile data`);
         return {
           success: true,
