@@ -70,17 +70,9 @@ async function _sendEmailWithTemplate(
       to,
       subject,
       html: emailBody,
-      attachments: [
-        {
-          filename: "notex_logo.svg",
-          path: path.join(__dirname, "..", "..", "assets/notex_logo.svg"),
-          cid: "logo",
-        },
-      ],
     };
 
     await transporter.sendMail(mailOptions);
-    console.log("Email sent successfully");
   } catch (error) {
     console.error("Sending email failed:", error);
   }
