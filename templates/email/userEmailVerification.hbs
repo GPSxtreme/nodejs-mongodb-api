@@ -1,0 +1,24 @@
+<html>
+  <head>
+    <style>
+      .card { display: inline-block; margin: 0 auto; background-color: #644162;
+      gap: 10px; padding: 60px; width: min(350px, 100%); height: clamp(300px,
+      700px, 100%); } .card h3 { color: #ffffff; font-size: large; } .card p {
+      color: #ffffff; font-size: medium; }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <img
+        src="cid:logo"
+        alt="logo"
+        height="100"
+        width="100"
+        style="display: block; margin: 0 auto;"
+      />
+      <h3>Hey {{name}},</h3>
+      <p>Click <a href={{verificationLink}}>here</a> to confirm your email.</p>
+      <p>From, <br /> Team notex.</p>
+    </div>
+  </body>
+</html>
