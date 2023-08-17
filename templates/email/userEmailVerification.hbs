@@ -1,24 +1,41 @@
 <html>
-  <head>
-    <style>
-      .card { display: inline-block; margin: 0 auto; background-color: #644162;
-      gap: 10px; padding: 60px; width: min(350px, 100%); height: clamp(300px,
-      700px, 100%); } .card h3 { color: #ffffff; font-size: large; } .card p {
-      color: #ffffff; font-size: medium; }
-    </style>
-  </head>
-  <body>
-    <div class="card">
-      <img
-        src="cid:logo"
-        alt="logo"
-        height="100"
-        width="100"
-        style="display: block; margin: 0 auto;"
-      />
-      <h3>Hey {{name}},</h3>
-      <p>Click <a href={{verificationLink}}>here</a> to confirm your email.</p>
-      <p>From, <br /> Team notex.</p>
+<head>
+  <style>
+    .card {
+      display: in-line-block;
+      margin: 0 auto;
+      background-color: #2D1E2C;
+      padding: 40px;
+      width: min(350px, 100%);
+      height: clamp(300px,
+          700px, 100%);
+    }
+
+    .card h3 {
+      color: #ffffff;
+      font-size: large;
+    }
+
+    .card p {
+      color: #ffffff;
+      font-size: medium;
+    }
+    .card a{
+      color: #D99BFF;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <img src="https://i.ibb.co/w4fWjTw/logo.png" alt="logo" height="50" width="150" style="display: block; margin: 0 auto;padding-bottom:30px" />
+    <div> 
+      <h3>Hey <span style="color:#D99BFF;">{{name}}!</span></h3>
+    <p>Click <a href={{verificationLink}}>here</a> to verify your email.</p>
+      <p>If you did not ask for this email, you can ignore it.</p>
+      <p>Happy noting!</p>
     </div>
-  </body>
+    <div style="padding-top:20px;">
+    <p>From, <br /> Team notex ✏️</p>
+  </div>
+</body>
 </html>
