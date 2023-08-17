@@ -73,7 +73,7 @@ async function _sendEmailWithTemplate(
       attachments: [
         {
           filename: "notex_logo.svg",
-          path: path.join(__dirname, "../..", "assets/notex_logo.svg"),
+          path: path.join(__dirname, "..", "..", "assets/notex_logo.svg"),
           cid: "logo",
         },
       ],
