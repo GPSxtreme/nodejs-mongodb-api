@@ -11,6 +11,8 @@ export {
   updateUserData,
   verifyUserEmail,
   sendUserEmailVerificationLink,
+  sendPasswordResetLink,
+  resetUserPassword,
 };
 
 const register = async (req: Request, res: Response) => {
@@ -70,7 +72,7 @@ const uploadProfilePicture = async (req: Request, res: Response) => {
 const updateUserData = async (req: Request, res: Response) => {
   try {
     const updateData: User = req.body;
-    await UserService.updateUserData(req.userId!, updateData).then(
+    await UserService.handleUpdateUserData(req.userId!, updateData).then(
       (response) => {
         res.status(response!.success ? 200 : 500).send(response);
       }
@@ -95,6 +97,21 @@ const sendUserEmailVerificationLink = async (req: Request, res: Response) => {
     res.status(500).send({
       status: false,
       message: `Failed to send verificationLink , ${error}`,
+    });
+  }
+};
+
+const sendPasswordResetLink = async (req: Request, res: Response) => {
+  try {
+    const { email } = req.body;
+    await UserService.handleSendPasswordResetLink(email).then((response) => {
+      res.status(response!.success ? 200 : 500).send(response);
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({
+      status: false,
+      message: `Failed to send password reset link , ${error}`,
     });
   }
 };
@@ -140,4 +157,21 @@ const verifyUserEmail = async (req: Request, res: Response) => {
         "templates/html/userEmailVerificationSuccess.html"
       )
     );
+};
+
+const resetUserPassword = async (req: Request, res: Response) => {
+  try {
+    const { email, token, newPassword } = req.body;
+    await UserService.handleResetPassword(email, token, newPassword).then(
+      (response) => {
+        res.status(response.success ? 200 : 500).send(response);
+      }
+    );
+  } catch (error) {
+    res.status(500).send({
+      success: false,
+      message: `Failed to reset password.
+        Error : ${error}`,
+    });
+  }
 };
