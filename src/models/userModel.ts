@@ -28,37 +28,44 @@ const generateUniqueName = (): string => {
   return `${uniquePart}_${randomPart}`;
 };
 
-const userSchema = new Schema({
-  email: {
-    type: String,
-    lowercase: true,
-    required: [true, "Email is Required"],
-    unique: true,
+const userSchema = new Schema(
+  {
+    email: {
+      type: String,
+      lowercase: true,
+      trim: true,
+      required: [true, "Email is Required"],
+      unique: true,
+    },
+    profilePicture: {
+      data: Buffer,
+      contentType: String,
+    },
+    name: {
+      type: String,
+      trim: true,
+      default: generateUniqueName,
+    },
+    country: {
+      type: String,
+    },
+    dob: {
+      type: Date,
+    },
+    isEmailVerified: {
+      type: Boolean,
+      default: false,
+    },
+    password: {
+      type: String,
+      required: true,
+      minlength: [6, "Password should be at least 6 characters long"],
+    },
   },
-  profilePicture: {
-    data: Buffer,
-    contentType: String,
-  },
-  name: {
-    type: String,
-    default: generateUniqueName,
-  },
-  country: {
-    type: String,
-  },
-  dob: {
-    type: Date,
-  },
-  isEmailVerified: {
-    type: Boolean,
-    default: false,
-  },
-  password: {
-    type: String,
-    required: true,
-    minlength: [6, "Password should be at least 6 characters long"],
-  },
-});
+  {
+    timestamps: true,
+  }
+);
 // Middleware to hash the password before saving
 userSchema.pre("save", async function (next) {
   const user = this;
