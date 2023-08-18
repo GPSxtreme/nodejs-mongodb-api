@@ -1,4 +1,5 @@
 const router = require("express").Router();
+import fs from "fs";
 import {
   register,
   login,
@@ -6,13 +7,17 @@ import {
   updateUserData,
   verifyUserEmail,
   sendUserEmailVerificationLink,
+  sendPasswordResetLink,
+  resetUserPassword,
 } from "../controller/userController";
+import { Response, Request } from "express";
 export { router };
 import {
   userProfilePictureStorage,
   uploadUserProfilePicture,
 } from "../middleware/upload";
 import { AuthUtils } from "../utils/authUtils";
+import path from "path";
 
 userProfilePictureStorage;
 
@@ -31,3 +36,9 @@ router.get(
   AuthUtils.preAuthChecker,
   sendUserEmailVerificationLink
 );
+router.post("/sendPasswordResetLink", sendPasswordResetLink);
+router.get("/passwordReset", (req: Request, res: Response) => {
+  const { email, token } = req.query;
+  res.render("passwordResetForm", { layout: false, email, token });
+});
+router.post("/resetPassword", resetUserPassword);
