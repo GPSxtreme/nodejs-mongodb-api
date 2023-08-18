@@ -1,7 +1,10 @@
 import { UserModel, User } from "../models/userModel";
+import { tokenModel } from "../models/tokenModel";
 import { JwtUtils } from "../utils/jwtUtils";
 import fs from "fs";
 import path from "path";
+import bcrypt from "bcrypt";
+import crypto from "crypto";
 import Handlebars from "handlebars";
 import { EMAIL_PASSWORD, EMAIL_USERNAME } from "../config/environmentVariables";
 import nodemailer from "nodemailer";
@@ -190,6 +193,52 @@ class UserService {
       };
     }
   }
+  static async handleSendPasswordResetLink(email: string) {
+    try {
+      const user = await UserModel.findOne({ email });
+      if (!user) {
+        return {
+          success: false,
+          message: "user does not exist",
+        };
+      }
+      let token = tokenModel.findOne({ userId: user._id });
+      if (token) {
+        await token.deleteOne();
+      }
+      let resetToken = crypto.randomBytes(32).toString("hex");
+      const hash = await bcrypt.hash(resetToken, Number(10));
+      await new tokenModel({
+        userId: user._id,
+        token: hash,
+        createdAt: Date.now(),
+      }).save();
+      const encodedEmail = encodeURIComponent(user?.email!);
+      const encodedToken = encodeURIComponent(resetToken);
+      const resetLink = `${getApiEndPoint()}/user/passwordReset?email=${encodedEmail}&token=${encodedToken}`;
+      const templateData = {
+        name: user?.name,
+        resetLink: resetLink,
+      };
+
+      await _sendEmailWithTemplate(
+        user?.email!,
+        "Account password reset",
+        "userPasswordReset.hbs",
+        templateData
+      );
+      return {
+        success: true,
+        message: "password reset email sent successfully",
+      };
+    } catch (error) {
+      console.error(error);
+      return {
+        success: false,
+        message: `Failed to send password reset link\nError: ${error}`,
+      };
+    }
+  }
   static async handleProfilePictureUpload(userId: string, filePath: any) {
     try {
       const img = fs.readFileSync(filePath);
@@ -229,7 +278,7 @@ class UserService {
       };
     }
   }
-  static async updateUserData(userId: string, data: User) {
+  static async handleUpdateUserData(userId: string, data: User) {
     try {
       // and iso date string is being passed from flutter
       // end so we convert it into a Date object recognized by nodejs
@@ -256,6 +305,48 @@ class UserService {
       return {
         success: false,
         message: `Update user data failed\nError: ${error}`,
+      };
+    }
+  }
+  static async handleResetPassword(
+    userEmail: string,
+    token: string,
+    password: string
+  ) {
+    try {
+      const user = await UserModel.findOne({ email: userEmail });
+      if (!user) {
+        return {
+          success: false,
+          message: `User does not exist`,
+        };
+      }
+      const userId = user._id;
+      let passwordResetToken = await tokenModel.findOne({ userId });
+      if (!passwordResetToken) {
+        return {
+          success: false,
+          message: `Invalid or expired password reset token`,
+        };
+      }
+      const isValid = await bcrypt.compare(token, passwordResetToken.token);
+      if (!isValid) {
+        return {
+          success: false,
+          message: `Invalid or expired password reset token`,
+        };
+      }
+      user.password = password;
+      await user.save();
+      return {
+        success: true,
+        message: "password updated",
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: `Password reset failed. 
+        Error: ${error}`,
       };
     }
   }
