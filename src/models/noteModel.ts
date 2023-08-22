@@ -7,6 +7,7 @@ interface Note {
   body: string;
   createdTime?: Date;
   editedTime?: Date;
+  isFavorite: boolean;
 }
 interface NoteDocument extends Document, Note {}
 
@@ -31,6 +32,10 @@ const noteSchema: Schema<NoteDocument> = new Schema({
   editedTime: {
     type: Date,
     default: Date.now,
+  },
+  isFavorite: {
+    type: Boolean,
+    default: false,
   },
 });
 
