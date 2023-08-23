@@ -1,23 +1,23 @@
 import { Request, Response } from "express";
 import { AuthUtils } from "../utils/authUtils";
-import path from "path";
-
+import { UserModel } from "../models/userModel";
+import {
+  getProfilePicture,
+  uploadProfilePicture,
+} from "../controller/userController";
+import {
+  userProfilePictureStorage,
+  uploadUserProfilePicture,
+} from "../middleware/upload";
 const router = require("express").Router();
 export { router };
 
-router.get(
-  "/getProfilePicture",
+userProfilePictureStorage;
+
+router.post(
+  "/uploadProfilePicture",
   AuthUtils.preAuthChecker,
-  (req: Request, res: Response) => {
-    const userId = req.userId!;
-    const imagePath = path.resolve(
-      __dirname,
-      "..",
-      "..",
-      "uploads",
-      "userProfilePictures",
-      `${userId}.png`
-    );
-    res.sendFile(imagePath);
-  }
+  uploadUserProfilePicture.single("profilePicture"),
+  uploadProfilePicture
 );
+router.get("/getProfilePicture", AuthUtils.preAuthChecker, getProfilePicture);
