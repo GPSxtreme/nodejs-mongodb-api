@@ -13,6 +13,7 @@ export {
   sendUserEmailVerificationLink,
   sendPasswordResetLink,
   resetUserPassword,
+  getProfilePicture,
 };
 
 const register = async (req: Request, res: Response) => {
@@ -67,6 +68,20 @@ const uploadProfilePicture = async (req: Request, res: Response) => {
       .status(500)
       .send({ status: false, message: `Upload Failed , ${error}` });
   }
+};
+
+const getProfilePicture = async (req: Request, res: Response) => {
+  const userId = req.userId!;
+  const user: any = await UserModel.findOne({ _id: userId }).exec();
+
+  if (!user || !user.profilePicture) {
+    return res.status(404).send({
+      status: false,
+      message: "Profile picture not found",
+    });
+  }
+  res.setHeader("Content-Type", user.profilePicture.contentType);
+  res.send(user.profilePicture.data);
 };
 
 const updateUserData = async (req: Request, res: Response) => {
