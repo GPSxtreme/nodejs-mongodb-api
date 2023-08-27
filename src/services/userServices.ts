@@ -94,6 +94,8 @@ class UserService {
         userId: newUser._id,
         email: newUser.email,
         name: newUser.name,
+        country: newUser.country,
+        dob: newUser.dob,
         isEmailVerified: newUser.isEmailVerified,
       };
       const token = JwtUtils.generateToken(tokenData, remember ?? false);
@@ -134,6 +136,8 @@ class UserService {
           userId: user._id,
           email: user.email,
           name: user.name,
+          country: user.country,
+          dob: user.dob,
           isEmailVerified: user.isEmailVerified,
         };
         // generate jwt token
