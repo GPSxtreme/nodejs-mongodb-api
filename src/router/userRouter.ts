@@ -2,12 +2,12 @@ const router = require("express").Router();
 import {
   register,
   login,
-  uploadProfilePicture,
   updateUserData,
   verifyUserEmail,
   sendUserEmailVerificationLink,
   sendPasswordResetLink,
   resetUserPassword,
+  deleteUser,
 } from "../controller/userController";
 import { Response, Request } from "express";
 export { router };
@@ -22,9 +22,13 @@ router.get(
   AuthUtils.preAuthChecker,
   sendUserEmailVerificationLink
 );
+router.post("/accountDeletion", AuthUtils.preAuthChecker, deleteUser);
 router.post("/sendPasswordResetLink", sendPasswordResetLink);
 router.get("/passwordReset", (req: Request, res: Response) => {
   const { email, token } = req.query;
   res.render("passwordResetForm", { layout: false, email, token });
+});
+router.get("/requestAccountDeletion", (req: Request, res: Response) => {
+  res.render("userAccountDeletionForm", { layout: false });
 });
 router.post("/resetPassword", resetUserPassword);
