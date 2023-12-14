@@ -14,6 +14,7 @@ export {
   sendPasswordResetLink,
   resetUserPassword,
   getProfilePicture,
+  deleteUser,
 };
 
 const register = async (req: Request, res: Response) => {
@@ -186,6 +187,21 @@ const resetUserPassword = async (req: Request, res: Response) => {
     res.status(500).send({
       success: false,
       message: `Failed to reset password.
+        Error : ${error}`,
+    });
+  }
+};
+
+const deleteUser = async (req: Request, res: Response) => {
+  try {
+    const { email } = req.body;
+    await UserService.handleUserDeletion(email).then((response) => {
+      res.status(response.success ? 200 : 500).send(response);
+    });
+  } catch (error) {
+    res.status(500).send({
+      success: false,
+      message: `Failed to delete user account data.
         Error : ${error}`,
     });
   }
