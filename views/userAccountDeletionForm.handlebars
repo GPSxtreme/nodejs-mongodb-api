@@ -1,0 +1,50 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;900&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/css/userAccountDeletionForm.css" />
+  </head>
+  <body>
+    <nav>
+      <img
+        src="/assets/notex_logo.svg"
+        alt="logo"
+        height="100px"
+        width="100px"
+      />
+    </nav>
+    <div class="card">
+      <form id="user-account-deletion-form">
+        <h1 style="margin: 0 auto">
+          Account
+          <span style="color: #fff">deletion</span>
+        </h1>
+        <div>
+          <p>Please enter your account credentials</p>
+        </div>
+        <div>
+          <label for="user-email">Email</label>
+          <input type="text" id="user-email" required />
+        </div>
+        <div style="padding-bottom: 15px">
+          <label for="password">Password</label>
+          <input type="password" id="password" required />
+        </div>
+        <p style="color: red; font-weight: 500;">This action is irreversible and
+          deletes all your account data, notes and todos stored on our server</p>
+        <div style="display: flex; flex-direction: row;">
+          <input type="checkbox" name="confirmation" id="check-box" required />
+          <p>I wish to proceed</p>
+        </div>
+        <button type="submit">Delete account</button>
+      </form>
+    </div>
+  </body>
+  <script src="/js/userAccountDeletionForm.js"></script>
+</html>
