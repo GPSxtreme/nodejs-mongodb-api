@@ -1,4 +1,6 @@
 import { UserModel, User } from "../models/userModel";
+import { NoteModel } from "../models/noteModel";
+import { TodoModel } from "../models/todoModel";
 import { tokenModel } from "../models/tokenModel";
 import { JwtUtils } from "../utils/jwtUtils";
 import fs from "fs";
@@ -40,6 +42,11 @@ interface RegisterResponse {
   message: string;
   token?: string;
   tokenExpiresIn?: string;
+}
+
+interface serverResponse {
+  success: boolean;
+  message: string;
 }
 
 // Function to convert User object to TokenData
@@ -110,6 +117,31 @@ class UserService {
       console.error(error);
       // Handle any errors that occurred during the login process
       return { success: false, message: `Register failed\nError : ${error}` };
+    }
+  }
+
+  static async handleUserDeletion(email: string): Promise<serverResponse> {
+    try {
+      // find user with the given email
+      const user = await UserModel.findOne({ email });
+      // get users id
+      const userId = user!.id;
+      // delete all notes
+      await NoteModel.deleteMany({ userId });
+      // delete all todos
+      await TodoModel.deleteMany({ userId });
+      // finally delete user account
+      await UserModel.findByIdAndDelete(userId);
+      // send response
+      console.log(`${email} has deleted their account 😔😭`);
+      return { success: true, message: "Account data successfully deleted" };
+    } catch (error) {
+      console.error(error);
+      // Handle any errors that occurred during the login process
+      return {
+        success: false,
+        message: `Account deletion failed\nError : ${error}`,
+      };
     }
   }
 
