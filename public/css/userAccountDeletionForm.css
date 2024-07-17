@@ -5,10 +5,10 @@ body {
   text-align: center;
   margin: 0;
   min-height: 100vh;
-  background: linear-gradient(to bottom, #0d0c0d, #322231);
+  background: linear-gradient(to bottom, #0d0c0d, #1f1f1f);
 }
 h1 {
-  color: #d99bff;
+  color: #7377ff;
   font-weight: 900;
   font-size: 35px;
   margin-bottom: 10px;
@@ -19,9 +19,9 @@ p {
   margin: 0;
 }
 .card {
-  background: #644162; /* padding: 60px; */
+  background: #1f1f1f;
   border-radius: 4px;
-  box-shadow: 0 2px 3px #2e1d2d;
+  box-shadow: 0 2px 3px #1f1f1f4e;
   display: inline-block;
   margin: 0 auto;
   width: min(450px, 100%);
@@ -60,8 +60,8 @@ input {
 input:focus,
 textarea:focus,
 select:focus {
-  outline: #d99bff;
-  border: 1px solid #d99bff;
+  outline: #7377ff;
+  border: 1px solid #7377ff;
   background-color: #fff;
 }
 button {
